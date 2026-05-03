@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Location } from '@angular/common';
 import { first } from 'rxjs/operators';
 
 import { AccountService, AlertService } from '@app/_services';
@@ -26,7 +27,9 @@ export class ResetPasswordComponent implements OnInit {
         private route: ActivatedRoute,
         private router: Router,
         private accountService: AccountService,
-        private alertService: AlertService
+        private alertService: AlertService,
+        private location: Location,
+        private cdr: ChangeDetectorRef
     ) { }
 
     ngOnInit() {
@@ -39,8 +42,9 @@ export class ResetPasswordComponent implements OnInit {
 
         const token = this.route.snapshot.queryParams['token'];
 
-        // remove token from url to prevent http referer leakage
-        this.router.navigate([], { relativeTo: this.route, replaceUrl: true });
+        // Use location.replaceState to silently update the URL without
+        // triggering Angular's navigation cycle (which would destroy the component)
+        this.location.replaceState('/account/reset-password');
 
         this.accountService.validateResetToken(token)
             .pipe(first())
@@ -48,38 +52,39 @@ export class ResetPasswordComponent implements OnInit {
                 next: () => {
                     this.token = token;
                     this.tokenStatus = TokenStatus.Valid;
+                    this.cdr.detectChanges();
                 },
                 error: () => {
                     this.tokenStatus = TokenStatus.Invalid;
+                    this.cdr.detectChanges();
                 }
             });
     }
 
-    // convenience getter for easy access to form fields
     get f() { return this.form.controls; }
 
     onSubmit() {
         this.submitted = true;
+        this.cdr.detectChanges();
 
-        // reset alerts on submit
         this.alertService.clear();
 
-        // stop here if form is invalid
-        if (this.form.invalid) {
-            return;
-        }
+        if (this.form.invalid) return;
 
         this.loading = true;
-        this.accountService.resetPassword(this.token!, this.f.password.value, this.f.confirmPassword.value)
+        this.cdr.detectChanges();
+
+        this.accountService.resetPassword(this.token!, this.f['password'].value, this.f['confirmPassword'].value)
             .pipe(first())
             .subscribe({
                 next: () => {
                     this.alertService.success('Password reset successful, you can now login', { keepAfterRouteChange: true });
-                    this.router.navigate(['../login'], { relativeTo: this.route });
+                    this.router.navigate(['/account/login']);
                 },
                 error: error => {
                     this.alertService.error(error);
                     this.loading = false;
+                    this.cdr.detectChanges();
                 }
             });
     }
