@@ -80,8 +80,8 @@ src/
 
 ```bash
 # Clone the repository
-git clone <your-repo-url>
-cd <project-folder>
+git clone https://github.com/Zagreeed/Galan-Lab7-INTPROG
+cd Galan-Lab7-INTPROG
 
 # Install dependencies
 npm install
@@ -165,7 +165,7 @@ providers: [
 4. Token is validated server-side before the form is shown
 5. User sets a new password and is redirected to login
 
-> **Security note:** If the submitted email is not registered, the app still shows the same success message ("Please check your email..."). This is intentional — it prevents **email enumeration attacks** where a malicious user could probe which emails have accounts.
+> **Security note:** If the submitted email is not registered, the app still shows the same success message ("Please check your email..."). This is intentional it prevents **email enumeration attacks** where a malicious user could probe which emails have accounts.
 
 ---
 
