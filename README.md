@@ -1,4 +1,5 @@
 # Angular 21 — Email Sign Up with Verification, Authentication & Forgot Password
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 
 A full-featured Angular 21 authentication boilerplate with JWT-based login, email verification, forgot/reset password flow, role-based access control, and an admin panel. Uses a **fake backend interceptor** for development so no real API server is required.
 
