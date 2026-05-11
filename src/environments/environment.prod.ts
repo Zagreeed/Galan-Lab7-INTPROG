@@ -1,4 +1,4 @@
 export const environment = {
     production: true,
-    apiUrl: 'https://node-mysql-api-rh63.onrender.com'
+    apiUrl: 'https://node-mysql-api.vercel.app'
 };
